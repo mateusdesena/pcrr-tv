@@ -23,12 +23,12 @@
     </style>
 </head>
 <body>
-    <video id="videoPlayer" controls autoplay></video>
+    <video id="videoPlayer" controls></video>
 
     <script>
         const videoPlayer = document.getElementById('videoPlayer');
 
-        // Array com links dos vídeos hospedados no Google Drive (substitua pelos seus links)
+        // Links dos vídeos hospedados no Google Drive
         const videos = [
             'https://drive.google.com/uc?export=download&id=18A0DjVETcomZYoj-bpy5thVGnGg5N6AQ',
             'https://drive.google.com/uc?export=download&id=1HHobxAbuxPREPFXD0kO0SmqTVKT48RLP'
@@ -40,8 +40,10 @@
         function loadNextVideo() {
             videoPlayer.src = videos[currentVideoIndex];
             videoPlayer.load();
-            videoPlayer.play();
-            currentVideoIndex = (currentVideoIndex + 1) % videos.length; // Volta ao primeiro vídeo ao chegar ao final
+            videoPlayer.play().catch(error => {
+                console.error('Erro ao reproduzir o vídeo:', error);
+            });
+            currentVideoIndex = (currentVideoIndex + 1) % videos.length;
         }
 
         // Inicia o primeiro vídeo ao carregar a página
