@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player em Loop</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <video id="videoPlayer" controls autoplay></video>
+
+    <script>
+        const videoPlayer = document.getElementById('videoPlayer');
+
+        // Array com links dos vídeos hospedados no Google Drive (substitua pelos seus links)
+        const videos = [
+            'https://drive.google.com/file/d/18A0DjVETcomZYoj-bpy5thVGnGg5N6AQ/view?usp=sharing',
+            'https://drive.google.com/file/d/1HHobxAbuxPREPFXD0kO0SmqTVKT48RLP/view?usp=sharing',
+            
+        ];
+
+        let currentVideoIndex = 0;
+
+        // Função para carregar o próximo vídeo
+        function loadNextVideo() {
+            videoPlayer.src = videos[currentVideoIndex];
+            videoPlayer.load();
+            videoPlayer.play();
+            currentVideoIndex = (currentVideoIndex + 1) % videos.length; // Volta ao primeiro vídeo ao chegar ao final
+        }
+
+        // Inicia o primeiro vídeo ao carregar a página
+        loadNextVideo();
+
+        // Quando o vídeo termina, carrega o próximo
+        videoPlayer.onended = loadNextVideo;
+    </script>
+</body>
+</html>
