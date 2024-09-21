@@ -14,6 +14,7 @@
             justify-content: center;
             align-items: center;
             background-color: black;
+            cursor: pointer;
         }
         video {
             width: 100%;
@@ -23,15 +24,16 @@
     </style>
 </head>
 <body>
-    <video id="videoPlayer" controls></video>
+    <!-- Inicia mudo, mas o som será ativado após a interação do usuário -->
+    <video id="videoPlayer" controls autoplay muted></video>
 
     <script>
         const videoPlayer = document.getElementById('videoPlayer');
 
         // Links dos vídeos hospedados no Google Drive
         const videos = [
-            'https://drive.google.com/uc?export=download&id=18A0DjVETcomZYoj-bpy5thVGnGg5N6AQ',
-            'https://drive.google.com/uc?export=download&id=1HHobxAbuxPREPFXD0kO0SmqTVKT48RLP'
+            'https://www.googleapis.com/drive/v3/files/1Lc6wIDq7tNxsXfuqjhsVwRZMa2Nv86mE?alt=media&key=AIzaSyBTEtyKrVaua4SU5Lm-G-4mtBCQTqxlCkM',
+            'https://www.googleapis.com/drive/v3/files/1mnQ2R_CCEN3Eppckhwb2MGrVILqkth-7?alt=media&key=AIzaSyBTEtyKrVaua4SU5Lm-G-4mtBCQTqxlCkM',
         ];
 
         let currentVideoIndex = 0;
@@ -51,6 +53,12 @@
 
         // Quando o vídeo termina, carrega o próximo
         videoPlayer.onended = loadNextVideo;
+
+        // Quando o usuário interage com a página (qualquer clique), habilita o som
+        document.body.addEventListener('click', () => {
+            videoPlayer.muted = false;
+            videoPlayer.play();
+        });
     </script>
 </body>
 </html>
