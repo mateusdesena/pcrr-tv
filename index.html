@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Player em Loop</title>
+    <title>PCRR TV</title>
     <style>
         body, html {
             margin: 0;
@@ -16,48 +16,69 @@
             background-color: black;
             cursor: pointer;
         }
-        video {
+        iframe {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            border: none;
         }
     </style>
 </head>
 <body>
-    <!-- Inicia mudo, mas o som será ativado após a interação do usuário -->
-    <video id="videoPlayer" controls autoplay muted></video>
+    <!-- Player do YouTube -->
+    <div id="player"></div>
 
     <script>
-        const videoPlayer = document.getElementById('videoPlayer');
-
-        // Links dos vídeos hospedados no Google Drive
+        // Lista de IDs dos vídeos do YouTube
         const videos = [
-            'https://www.googleapis.com/drive/v3/files/1Lc6wIDq7tNxsXfuqjhsVwRZMa2Nv86mE?alt=media&key=AIzaSyBTEtyKrVaua4SU5Lm-G-4mtBCQTqxlCkM',
-            'https://www.googleapis.com/drive/v3/files/1mnQ2R_CCEN3Eppckhwb2MGrVILqkth-7?alt=media&key=AIzaSyBTEtyKrVaua4SU5Lm-G-4mtBCQTqxlCkM',
+            'vE2Z4j8BNXw',
+            'h0ItT2Ys_FI',
+            '4RV8WwRhpv0'
         ];
 
         let currentVideoIndex = 0;
+        let player;
 
         // Função para carregar o próximo vídeo
         function loadNextVideo() {
-            videoPlayer.src = videos[currentVideoIndex];
-            videoPlayer.load();
-            videoPlayer.play().catch(error => {
-                console.error('Erro ao reproduzir o vídeo:', error);
-            });
+            player.loadVideoById(videos[currentVideoIndex]);
             currentVideoIndex = (currentVideoIndex + 1) % videos.length;
         }
 
-        // Inicia o primeiro vídeo ao carregar a página
-        loadNextVideo();
+        // Função da API do YouTube para inicializar o player
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                videoId: videos[currentVideoIndex],
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // Quando o player estiver pronto, o primeiro vídeo será carregado
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
 
         // Quando o vídeo termina, carrega o próximo
-        videoPlayer.onended = loadNextVideo;
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                loadNextVideo();
+            }
+        }
 
-        // Quando o usuário interage com a página (qualquer clique), habilita o som
+        // Carregar o script da API do YouTube IFrame
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // Habilitar o som quando o usuário clica na página
         document.body.addEventListener('click', () => {
-            videoPlayer.muted = false;
-            videoPlayer.play();
+            player.unMute();
+            player.playVideo();
         });
     </script>
 </body>
